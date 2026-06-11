@@ -5,6 +5,9 @@ import StatCard from '../components/dashboard/StatCard';
 import MonthlyChart from '../components/dashboard/MonthlyChart';
 import PaymentStatusPie from '../components/dashboard/PaymentStatusPie';
 import SaldoTrend from '../components/dashboard/SaldoTrend';
+import IuranStats from '../components/dashboard/IuranStats';
+import IuranMonthlyChart from '../components/dashboard/IuranMonthlyChart';
+import IuranStatusGrid from '../components/dashboard/IuranStatusGrid';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - i);
@@ -84,6 +87,20 @@ export default function Dashboard() {
                             <SaldoTrend data={stats.monthly} />
                             <PaymentStatusPie data={stats.payment_status_breakdown} />
                         </div>
+
+                        {/* Iuran Section */}
+                        {stats.iuran && (
+                            <>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-700 pt-6">
+                                    Ringkasan Iuran
+                                </h3>
+                                <IuranStats data={stats.iuran} />
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <IuranMonthlyChart data={stats.iuran} />
+                                    <IuranStatusGrid data={stats.iuran} totalRumah={stats.summary.jumlah_rumah_dihuni} />
+                                </div>
+                            </>
+                        )}
                     </>
                 )}
             </div>

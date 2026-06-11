@@ -65,6 +65,7 @@ class DashboardController extends Controller
 
         // Count queries
         $jumlahRumah = Data::where('tipe', 'rumah')->count();
+        $jumlahRumahDihuni = Data::where('tipe', 'rumah')->where('status', 'dihuni')->count();
         $jumlahPenghuniAktif = Tran::where('tipe', 'penghuni')
             ->where('status_penghuni', '<>', 'Pindah')
             ->count();
@@ -113,7 +114,9 @@ class DashboardController extends Controller
                 bulan,
                 tipe3,
                 SUM(bayar) as total,
-                SUM(CASE WHEN status_bayar = 'lunas' THEN bayar ELSE 0 END) as total_lunas
+                SUM(CASE WHEN status_bayar = 'lunas' THEN bayar ELSE 0 END) as total_lunas,
+                SUM(CASE WHEN status_bayar = 'lunas' THEN 1 ELSE 0 END) as lunas_count,
+                COUNT(*) as total_records
             ")
             ->where('tahun', $year)
             ->where('tipe', 'bayar')
@@ -127,6 +130,8 @@ class DashboardController extends Controller
                 'tipe3' => $row->tipe3,
                 'total' => (float) $row->total,
                 'total_lunas' => (float) $row->total_lunas,
+                'lunas_count' => (int) $row->lunas_count,
+                'total_records' => (int) $row->total_records,
             ]);
 
         $iuranData = [
@@ -140,6 +145,7 @@ class DashboardController extends Controller
                 'total_pengeluaran' => $pengeluaran,
                 'saldo' => $pemasukan - $pengeluaran,
                 'jumlah_rumah' => $jumlahRumah,
+                'jumlah_rumah_dihuni' => $jumlahRumahDihuni,
                 'jumlah_penghuni_aktif' => $jumlahPenghuniAktif,
                 'pembayaran_tertunda' => $pembayaranTertunda,
                 'pembayaran_terlambat' => $pembayaranTerlambat,
